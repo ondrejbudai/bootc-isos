@@ -1,0 +1,6 @@
+# image-builder artifacts
+image-builder-cli/
+image-builder
+
+# ISO output directories
+output/

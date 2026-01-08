@@ -10,7 +10,10 @@ RUN sed -i "s/^livesys_session=.*/livesys_session=kde/" /etc/sysconfig/livesys
 
 RUN systemctl enable livesys.service livesys-late.service
 
-RUN mkdir -p /boot/efi && cp -av /usr/lib/bootupd/updates/EFI /boot/efi/ && cp /boot/efi/EFI/fedora/grubx64.efi /boot/efi/EFI/fedora/gcdx64.efi
+# Setup EFI boot files from /usr/lib/efi structure
+RUN mkdir -p /boot/efi && \
+    cp -av /usr/lib/efi/*/*/EFI /boot/efi/ && \
+    cp /boot/efi/EFI/fedora/grubx64.efi /boot/efi/EFI/fedora/gcdx64.efi
 
 COPY ./src /src
 RUN mkdir -p /etc/flatpak/remotes.d && \
