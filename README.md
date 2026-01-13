@@ -6,7 +6,9 @@ Build bootable ISOs for Fedora-based distributions using image-builder and bootc
 
 - [just](https://github.com/casey/just) - command runner
 - [podman](https://podman.io/) - container runtime
-- Go toolchain (for native image-builder builds)
+- Go toolchain (for building image-builder)
+- osbuild and dependencies (for ISO generation)
+- qemu (for booting ISOs)
 
 ## Quick Start
 
@@ -19,30 +21,23 @@ just bazzite-iso
 
 # Build a Kinoite ISO
 just kinoite-iso
+
+# Boot an ISO in QEMU
+just bazzite-boot
+just kinoite-boot
 ```
 
 ## Available Targets
 
 | Target | Description |
 |--------|-------------|
-| `bazzite-image` | Build the Bazzite installer container image |
+| `bazzite-image` | Build the Bazzite container image |
 | `bazzite-iso` | Build Bazzite ISO (includes building image-builder and container image) |
+| `bazzite-boot` | Boot Bazzite ISO in QEMU (4GB RAM, 2 CPUs) |
 | `kinoite-image` | Build the Kinoite container image |
 | `kinoite-iso` | Build Kinoite ISO (includes building image-builder and container image) |
+| `kinoite-boot` | Boot Kinoite ISO in QEMU (4GB RAM, 2 CPUs) |
 | `image-builder` | Build image-builder-cli from source with patched images library |
-
-## Configuration
-
-The justfile supports the following variables:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `use_container` | `false` | Set to `true` to build using containerized image-builder |
-
-Example:
-```bash
-just use_container=true bazzite-iso
-```
 
 ## Output
 
@@ -84,6 +79,8 @@ This allows building multiple ISOs in parallel.
    - The container image as the installer environment
    - A payload reference to the target distribution image
 
+4. **Boot**: Uses QEMU to boot the generated ISO with 4GB RAM and 2 CPUs.
+
 ## Adding a New Target
 
 1. Create a new directory (e.g., `my-distro/`)
@@ -96,4 +93,7 @@ my-distro-image: (build-image "my-distro")
 
 # Build my-distro ISO
 my-distro-iso: (build-iso "my-distro" "registry.example.com/my-distro:latest")
+
+# Boot my-distro ISO in QEMU
+my-distro-boot: (boot-iso "my-distro")
 ```

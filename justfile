@@ -37,6 +37,20 @@ build-iso target payload_ref: image-builder (build-image target)
         ./image-builder --output-dir output/{{ target }} build --bootc-ref localhost/{{ target }}:latest --bootc-default-fs ext4 --bootc-installer-payload-ref {{ payload_ref }} bootc-generic-iso
     fi
 
+# Boot an ISO using QEMU (4GB RAM, 2 CPUs, 20GB ephemeral disk, no UEFI)
+[private]
+boot-iso target:
+    #!/usr/bin/env bash
+    set -exo pipefail
+    iso=$(find output/{{ target }} -name "*.iso" | head -1)
+    if [ -z "$iso" ]; then
+        echo "No ISO found in output/{{ target }}/"
+        exit 1
+    fi
+    qemu-system-x86_64 -m 4G -smp 2 -enable-kvm \
+        -cdrom "$iso" \
+        -drive if=virtio,format=raw,file.driver=null-co,file.size=20G
+
 # Build image-builder-cli from source with patched images library
 image-builder:
     #!/usr/bin/env bash
@@ -86,6 +100,9 @@ bazzite-image: (build-image "bazzite")
 # Build bazzite ISO using image-builder with bootc-installer image type
 bazzite-iso: (build-iso "bazzite" "ghcr.io/ublue-os/bazzite:latest")
 
+# Boot bazzite ISO in QEMU
+bazzite-boot: (boot-iso "bazzite")
+
 ###############################################################################
 # Kinoite targets
 ###############################################################################
@@ -95,3 +112,6 @@ kinoite-image: (build-image "kinoite")
 
 # Build kinoite ISO using image-builder with bootc-installer image type
 kinoite-iso: (build-iso "kinoite" "quay.io/fedora-ostree-desktops/kinoite:43")
+
+# Boot kinoite ISO in QEMU
+kinoite-boot: (boot-iso "kinoite")
