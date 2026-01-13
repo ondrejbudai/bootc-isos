@@ -1,0 +1,29 @@
+name: Build
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        container:
+          - bazzite
+          - kinoite
+
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@main
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build ${{ matrix.container }} container
+        run: |
+          podman build \
+            --cap-add sys_admin \
+            --security-opt label=disable \
+            -t iso-hackathon-${{ matrix.container }}:latest \
+            ./${{ matrix.container }}

@@ -1,19 +1,5 @@
+# run with --cap-add sys_admin --security-opt label=disable
+
 FROM ghcr.io/ublue-os/bazzite:latest
 
-# COPY ./src /src
-# RUN cat /src/flatpaks | xargs flatpak install -y --noninteractive
-
-RUN dnf install -y dracut-live
-RUN DRACUT_NO_XATTR=1 dracut -v --force --zstd --reproducible --no-hostonly --add "dmsquash-live dmsquash-live-autooverlay" "/usr/lib/modules/6.17.7-ba19.fc43.x86_64/initramfs.img" "6.17.7-ba19.fc43.x86_64"
-RUN dnf install -y anaconda-live libblockdev-{btrfs,lvm,dm} livesys-scripts
-RUN sed -i "s/^livesys_session=.*/livesys_session=kde/" /etc/sysconfig/livesys
-RUN systemctl enable livesys.service livesys-late.service
-
-
-#RUN cat <<EOF >/usr/share/anaconda/interactive-defaults.ks
-#ostreecontainer ghcr.io/ublue-os/bazzite:latest --no-signature-verification
-#EOF
-
-RUN mkdir -p /boot/efi && cp -av /usr/lib/bootupd/updates/EFI /boot/efi/ && cp /boot/efi/EFI/fedora/grubx64.efi /boot/efi/EFI/fedora/gcdx64.efi
-
-RUN dnf install -y xorriso isomd5sum
+RUN --mount=type=bind,source=src,target=/src /src/build.sh
