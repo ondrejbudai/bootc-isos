@@ -1,0 +1,27 @@
+name: Build ISO Hackathon Containers
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        container:
+          - bazzite
+          - kinoite
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build ${{ matrix.container }} container
+        run: |
+          podman build \
+            --cap-add sys_admin \
+            --security-opt label=disable \
+            -t iso-hackathon-${{ matrix.container }}:latest \
+            ./${{ matrix.container }}
