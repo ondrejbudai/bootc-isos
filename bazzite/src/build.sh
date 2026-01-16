@@ -55,6 +55,7 @@ mkdir /tmp/vartmp
 ln -s /tmp/vartmp /var/tmp
 
 # Copy in the iso config for image-builder
+mkdir -p /usr/lib/bootc-image-builder
 cp /src/iso.yaml /usr/lib/bootc-image-builder/iso.yaml
 
 # Clean up dnf cache to save space
