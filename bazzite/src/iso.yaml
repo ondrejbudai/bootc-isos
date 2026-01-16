@@ -1,0 +1,7 @@
+label: "Bazzite-Live-%s"
+kernel_args:
+  - "root=live:CDLABEL=%s"
+  - "rd.live.image"
+  - "quiet"
+  - "rhgb"
+  - "enforcing=0"
