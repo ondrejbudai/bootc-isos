@@ -45,5 +45,14 @@ dnf install -y xorriso isomd5sum
 rm -f /etc/localtime
 systemd-firstboot --timezone UTC
 
+# / in a booted live ISO is an overlayfs with upperdir pointed somewhere under /run
+# This means that /var/tmp is also technically under /run.
+# /run is of course a tmpfs, but set with quite a small size.
+# ostree needs quite a lot of space on /var/tmp for temporary files so /run is not enough.
+# Relocate /var/tmp to /tmp/vartmp to avoid this issue - /tmp seems to be larger.
+rm -rf /var/tmp
+mkdir /tmp/vartmp
+ln -s /tmp/vartmp /var/tmp
+
 # Clean up dnf cache to save space
 dnf clean all
