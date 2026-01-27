@@ -52,7 +52,8 @@ jobs:
 
           aws s3 cp "$ISO_FILE" \
             "s3://bootc-isos/$ISO_NAME" \
-            --endpoint-url "https://s3.eu-central-003.backblazeb2.com"
+            --endpoint-url "https://s3.eu-central-003.backblazeb2.com" \
+            --no-progress
 
           PUBLIC_URL="https://bootc-isos.s3.eu-central-003.backblazeb2.com/${ISO_NAME}"
 
