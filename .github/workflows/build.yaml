@@ -39,3 +39,32 @@ jobs:
 
       - name: Build ${{ matrix.container }} ISO
         run: sudo just iso-in-container ${{ matrix.container }}
+
+      - name: Fix output ownership
+        run: sudo chown -R $USER:$USER output/
+
+      - name: Upload ISO to Hetzner Object Storage
+        if: github.event_name == 'push'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.HETZNER_S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.HETZNER_S3_SECRET_KEY }}
+        run: |
+          ISO_FILE=$(ls output/*.iso)
+          ISO_NAME="${{ matrix.container }}-${{ github.sha }}.iso"
+
+          aws s3 cp "$ISO_FILE" \
+            "s3://bootc-isos/$ISO_NAME" \
+            --endpoint-url "https://fsn1.your-objectstorage.com"
+
+          PUBLIC_URL="https://bootc-isos.fsn1.your-objectstorage.com/${ISO_NAME}"
+
+          echo ""
+          echo "========================================================"
+          echo "ISO uploaded successfully!"
+          echo ""
+          echo "Download URL:"
+          echo "  $PUBLIC_URL"
+          echo ""
+          echo "Or using curl:"
+          echo "  curl -LO $PUBLIC_URL"
+          echo "========================================================"
