@@ -23,5 +23,8 @@ jobs:
       - name: Install just
         uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
 
+      - name: Build image-builder container
+        run: just build-image-builder
+
       - name: Build ${{ matrix.container }} container
         run: just container ${{ matrix.container }}
