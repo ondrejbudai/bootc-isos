@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Free disk space
-        uses: jlumbroso/free-disk-space@main
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
 
       # Some runners have a large /, some of them have an extra /mnt with ~60GiB free space.
       # This action loop-mounts /var/lib/containers to the larger /mnt if available.
@@ -26,7 +26,7 @@ jobs:
           mount-opts: compress=zstd:1
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
       - name: Install just
         run: sudo apt update && sudo apt install -y just
