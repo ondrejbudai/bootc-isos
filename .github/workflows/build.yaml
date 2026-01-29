@@ -15,6 +15,8 @@ jobs:
           - bazzite
           - kinoite
           - bluefin-lts
+          - debian
+          - ubuntu
 
     steps:
       - name: Checkout repository

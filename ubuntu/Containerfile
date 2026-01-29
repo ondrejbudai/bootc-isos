@@ -1,0 +1,29 @@
+FROM docker.io/ubuntu:resolute
+
+COPY bootc-stub /usr/bin/bootc
+
+RUN apt update && DRACUT_NO_XATTR=1 apt install -y btrfs-progs dosfstools e2fsprogs fdisk linux-firmware linux-image-generic skopeo systemd systemd-boot* xfsprogs dracut dracut-live
+
+RUN cp $(realpath /boot/vmlinuz) "$(find /usr/lib/modules -maxdepth 1 -type d | tail -n 1)/vmlinuz"
+
+RUN printf 'reproducible=yes\nhostonly=no\ncompress=zstd\nadd_dracutmodules+=" dmsquash-live dmsquash-live-autooverlay "' | tee "/usr/lib/dracut/dracut.conf.d/30-bootcrew-bootc-container-build.conf" && DRACUT_NO_XATTR=1 dracut -v --force \
+"$(find /usr/lib/modules -maxdepth 1 -type d | tail -n 1)/initramfs.img" "$(basename "$(find /usr/lib/modules -maxdepth 1 -type d | tail -n 1)")"
+
+RUN apt install -y grub-efi
+
+RUN mkdir -p /usr/lib/efi/shim/version_placeholder/EFI/ubuntu /boot/efi/EFI/ubuntu && \
+    cp /usr/lib/shim/shimx64.efi /boot/efi/EFI/ubuntu/ && \
+    cp /usr/lib/shim/mmx64.efi /boot/efi/EFI/ubuntu/ && \
+    cp /usr/lib/grub/x86_64-efi/monolithic/gcdx64.efi /boot/efi/EFI/ubuntu/
+
+RUN apt install -y podman
+
+# RUN echo "VERSION_ID=42" >> /etc/os-release
+
+RUN apt install -y squashfs-tools xorriso isomd5sum
+
+RUN apt install -y grub-pc-bin
+
+RUN ln -s /usr/bin/grub-mkimage /usr/bin/grub2-mkimage
+
+RUN useradd -m -s /bin/bash liveuser && passwd -d liveuser

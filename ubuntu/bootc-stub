@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ "$1" != "install" || "$2" !=  "print-configuration" ]]; then
+    echo "This shim only support install print-configuration!" >&2
+    exit 1
+fi
+
+echo '{"block":["direct"],"filesystem":{"root":{"type":"xfs"}},"match-architectures":null,"root-fs-type":"xfs"}'
