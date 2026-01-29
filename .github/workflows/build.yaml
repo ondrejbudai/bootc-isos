@@ -25,6 +25,8 @@ jobs:
 
       - name: Free disk space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
+        with:
+          tool-cache: true
 
       # Some runners have a large /, some of them have an extra /mnt with ~60GiB free space.
       # This action loop-mounts /var/lib/containers to the larger /mnt if available.
