@@ -1,0 +1,3 @@
+FROM quay.io/fedora/fedora-bootc:rawhide
+
+RUN --mount=type=bind,source=src,target=/src /src/build.sh
