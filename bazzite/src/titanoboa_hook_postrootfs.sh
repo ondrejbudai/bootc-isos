@@ -244,7 +244,7 @@ cat <<'EOF' >>/usr/share/anaconda/post-scripts/install-flatpaks.ks
 deployment="$(ostree rev-parse --repo=/mnt/sysimage/ostree/repo ostree/0/1/0)"
 target="/mnt/sysimage/ostree/deploy/default/deploy/$deployment.0/var/lib/"
 mkdir -p "$target"
-rsync -aAXUHKP /var/lib/flatpak "$target"
+rsync -aAXUHKP --filter='-x security.selinux' /var/lib/flatpak "$target"
 %end
 EOF
 
