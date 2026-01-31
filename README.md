@@ -41,6 +41,7 @@ This repository contains the following example ISOs:
 - `bluefin-lts` - Live environment of Bluefin LTS (CentOS Stream 10 + GNOME)
 - `debian` - Tiny Debian text environment, log in with `liveuser`
 - `ubuntu` - Tiny Ubuntu text environment, log in with `liveuser`
+- `fedora-payload` - Minimal text-based Fedora bootc online installer.
 
 ## Building ISOs
 Build the container:
