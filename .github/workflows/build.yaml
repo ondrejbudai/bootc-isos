@@ -45,8 +45,17 @@ jobs:
       - name: Build ${{ matrix.container }} ISO
         run: sudo just iso-in-container ${{ matrix.container }}
 
+      - name: Patch ISO for testing
+        run: sudo just patch output/*.iso output/test/patched.iso
+
       - name: Fix output ownership
         run: sudo chown -R $USER:$USER output/
+
+      - name: Install QEMU
+        run: sudo apt install -y qemu-system-x86 qemu-utils
+
+      - name: Test ISO boot
+        run: just test-boot output/test/patched.iso
 
       - name: Upload ISO to Backblaze B2
         if: github.event_name == 'push'
